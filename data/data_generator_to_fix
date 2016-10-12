@@ -1,0 +1,62 @@
+// data_generator.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <ctime>
+
+using namespace std;
+
+int dimension = 0;               // n rozmiar macierzy
+int MAX_VALUE = 100;             // maxymalna wartość wylosowanych wartości
+int rand_value = 0;              // zmienna losowana do zapełniania macierzy
+void generateData();
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{	
+	srand( time( NULL ) );
+
+	cout << "Give a dimension: "; 
+	cin >> dimension;
+
+	generateData();
+	getchar();
+	return 0;
+}
+
+void generateData() {
+
+	int** macierz = new int * [dimension];
+	
+	for (int i = 0;  i < dimension; i++) {        // zapełniam macierz zerami
+		for (int j = 0; j < dimension; j++) {
+			macierz [i][j] = 0;
+		}
+	}
+
+	for (int i = 0; i < dimension; i++){                 // i - wysokość, j - szerokość macierzy
+		for (int j = 0; j < dimension; j++) {
+		if ((i == j)||macierz[i][j] != 0) {                                                         // jeżeli środek macierzy, to zostawiam zero
+			continue;
+		}
+
+		rand_value = rand()%MAX_VALUE;
+		macierz [i][j] = rand_value;
+		macierz [j][i] = rand_value;
+	}
+		
+	}
+
+	for (int i = 0; i < dimension; i++) {
+		
+		for (int j = 0; j < dimension; j++) {
+		
+			cout << macierz[i][j];
+			cout << " ";
+		}
+
+		cout << "/n";
+	}
+
+}
