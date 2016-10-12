@@ -1,7 +1,3 @@
-//
-// Created on 22.05.16.
-//
-
 #include "Permutation.h"
 
 Permutation::Permutation(int length) : length(length), tab(new int[length]) {

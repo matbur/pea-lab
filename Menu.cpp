@@ -21,8 +21,7 @@ void Menu::tspMenu() {
         err = 0;
         printf("\n\nProblem komiwojazera:\n"
                        "[1] Algorytm Przegladu Zupelnego\n"
-                       "[3] Generuj Dane\n"
-                       "[4] Laduj Plik\n"
+                       "[2] Laduj Plik\n"
                        "[0] Powrot\nWybierz: ");
         check = scanf("%d", &op);
         if (check != 1) {
@@ -42,13 +41,8 @@ void Menu::tspMenu() {
 
                 ATSP::BruteForce(data)->print();
                 fflush(stdin);
-                getchar();
                 break;
-            case 3:
-                err = tspGenerate(data);
-                data->print();
-                break;
-            case 4:
+            case 2:
                 FileSupport::loadTspFile(*data);
                 data->print();
                 break;
@@ -73,5 +67,3 @@ int Menu::tspGenerate(Graph *data) {
     data->generate(size, bool(oneway - 1));
     return 0;
 }
-
-

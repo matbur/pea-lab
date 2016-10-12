@@ -1,7 +1,6 @@
 #include "Graph.h"
 
-
-Graph::Graph() : points(0), weights(nullptr) { }
+Graph::Graph() : points(0), weights(nullptr) {}
 
 Graph::Graph(int points) : points(points) {
     init();
@@ -14,7 +13,7 @@ Graph::Graph(const Graph &graph) : Graph() {
     init();
 
     for (auto r = 0; r < points; r++)
-        memcpy(weights[r], graph.weights[r], sizeof(int)*points);
+        memcpy(weights[r], graph.weights[r], sizeof(int) * points);
 }
 
 Graph &Graph::operator=(const Graph &graph) {
@@ -23,7 +22,7 @@ Graph &Graph::operator=(const Graph &graph) {
     reset(graph.points);
 
     for (auto r = 0; r < points; r++)
-        memcpy(weights[r], graph.weights[r], sizeof(int)*points);
+        memcpy(weights[r], graph.weights[r], sizeof(int) * points);
 
     return *this;
 }
@@ -49,7 +48,7 @@ void Graph::init() {
         weights[i] = new int[points];
 
     for (auto r = 0; r < points; r++)
-        memset(weights[r], -1, sizeof(int)*points);
+        memset(weights[r], -1, sizeof(int) * points);
 }
 
 bool Graph::addEdge(int from, int to, int weight, bool oneway /*= false*/) {
@@ -145,34 +144,4 @@ void Graph::generate(int points, bool oneway /*= false*/) {
 int Graph::getWeight(int row, int col) const {
     return weights[row][col];
 }
-
-
-
-
-// example use
-/*
-int main() {
-    Graph graph(4);
-    Graph x;
-
-    printf("%d\n", x.getPoints());
-
-    graph.addEdge(0, 1, 5);
-    graph.addEdge(0, 2, 3);
-    graph.addEdge(1, 2, 1);
-    graph.addEdge(1, 3, 6);
-    graph.addEdge(2, 3, 10);
-
-    graph.print();
-
-    puts("own printing");
-    for(int p=0; p < graph.getPoints(); p++) {
-        for(auto e : graph.getNeighbours(p))
-            printf("from %d to %d by weight %d\n", p, e.to, e.weight);
-
-    }
-
-    return 0;
-}
-*/
 

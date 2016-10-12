@@ -20,8 +20,7 @@ bool FileSupport::loadTspFile(const string &fileName, Graph &data) {
                 if (check == 1) {
                     if (value != 0 and value != -1)
                         data.addEdge(it, i, value);
-                }
-                else {
+                } else {
                     data.reset(0);
                     cout << "Blad wczytywania z pliku! Nieprawidlowa ilsoc parametrow!" << endl;
                     return false;
