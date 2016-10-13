@@ -1,0 +1,82 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <fstream>
+
+using namespace std;
+
+int dimension = 0;
+std::fstream plik;
+
+void createData();
+
+
+int main()
+{
+	srand (time (NULL));
+	cout << "Give a dimension: ";
+	cin >> dimension;
+	
+	createData();
+    return 0;       
+}
+
+
+void createData() {
+	
+	int** macierz = new int * [dimension];
+	int randValue = 0;
+	int MAX_VALUE = 100;
+	
+	for (int i = 0; i < dimension; i++) {
+		macierz[i] = new int[dimension];
+	}
+	
+	for (int i = 0; i < dimension; i++) {
+		for (int j = 0; j < dimension; j++) {
+			macierz [i][j] = 0;
+		}
+	}
+ 
+	for (int i = 0; i< dimension; i++) {          //losowanie wartosci do macierzy
+		for (int j = 0; j < dimension; j++) { 
+			if (macierz[i][j] != 0 || i==j) {
+				continue;
+			}
+			randValue = rand()%MAX_VALUE;
+			macierz[i][j] = randValue;
+			macierz[j][i] = randValue;
+		}
+	}
+	
+	for (int i = 0; i < dimension; i++) {    // wypisuję macierz
+		for (int j = 0; j < dimension; j++) {
+			cout << macierz[i][j];
+			cout << " ";
+			if(macierz[i][j]<10) {
+				cout << " ";
+			}
+		}
+		cout << "\n";
+	}
+	
+	plik.open( "data.txt", std::ios::trunc | std::ios::out );      //zapisywanie do pliku
+	if (plik.good() == true) {
+		std::cout << "Uzyskano dostep do pliku!" << std::endl;
+		plik << dimension;
+		plik << "\n";
+		for (int i = 0; i < dimension; i++) {    // wypisuję macierz
+			for (int j = 0; j < dimension; j++) {
+				plik << macierz[i][j];
+			   	plik << " ";
+			   		if(macierz[i][j]<10) {
+			  			plik << " ";
+					}
+			}
+		plik << "\n";
+	   	}
+		
+		plik.close();
+	}
+}
+
