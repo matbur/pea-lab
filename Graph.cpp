@@ -102,8 +102,8 @@ int Graph::getWeightsSum() const {
 }
 
 void Graph::print() const {
-    printf("Points in graph: %d\n", points);
-    puts("Neighbours:");
+    printf("Rozmiar grafu: %d\n", points);
+    puts("Sasiedzi:");
 
     printf("  W ");
     for (auto i = 0; i < points; i++)
@@ -144,4 +144,3 @@ void Graph::generate(int points, bool oneway /*= false*/) {
 int Graph::getWeight(int row, int col) const {
     return weights[row][col];
 }
-

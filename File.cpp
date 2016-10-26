@@ -1,7 +1,7 @@
-#include "FileSupport.h"
+#include "File.h"
 
 
-bool FileSupport::loadTspFile(const string &fileName, Graph &data) {
+bool File::load(const string &fileName, Graph &data) {
     FILE *filePtr;
     int el = 0;
     int check;
@@ -41,11 +41,11 @@ bool FileSupport::loadTspFile(const string &fileName, Graph &data) {
     return true;
 }
 
-bool FileSupport::loadTspFile(Graph &data) {
+bool File::loadTspFile(Graph &data) {
     string fileName;
     cout << "Podaj nazwe pliku: ";
     cin >> fileName;
-    return loadTspFile(fileName, data);
+    return load(fileName, data);
 }
 
 

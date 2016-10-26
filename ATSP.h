@@ -18,5 +18,11 @@ public:
      */
     static ATSP *BruteForce(const Graph *graph);
 
+    /**
+     * Rozwiazanie problemu algorytmem zachlannym.
+     * Szybkie, ale nie ma gwarancji na optymalny wynik.
+     */
+    static ATSP *Greedy(const Graph *graph, int start = 0);
+
     void print();
 };

@@ -9,7 +9,6 @@ void Menu::printError(int er) {
         cout << "Bledny wybor!" << endl;
 }
 
-
 void Menu::tspMenu() {
     int op = -1;
     int check = 0;
@@ -21,7 +20,9 @@ void Menu::tspMenu() {
         err = 0;
         printf("\n\nProblem komiwojazera:\n"
                        "[1] Algorytm Przegladu Zupelnego\n"
-                       "[2] Laduj Plik\n"
+                       "[2] Algorytm Zachlanny\n"
+                       "[3] Generuj Dane\n"
+                       "[4] Laduj Plik\n"
                        "[0] Powrot\nWybierz: ");
         check = scanf("%d", &op);
         if (check != 1) {
@@ -43,7 +44,23 @@ void Menu::tspMenu() {
                 fflush(stdin);
                 break;
             case 2:
-                FileSupport::loadTspFile(*data);
+                if (data->getPoints() == 0) {
+                    printf("\nBrak grafu\n");
+                    continue;
+                }
+
+                printf("Caly graf:\n");
+                data->print();
+
+                ATSP::Greedy(data)->print();
+                fflush(stdin);
+                break;
+            case 3:
+                err = tspGenerate(data);
+                data->print();
+                break;
+            case 4:
+                File::loadTspFile(*data);
                 data->print();
                 break;
             default:
