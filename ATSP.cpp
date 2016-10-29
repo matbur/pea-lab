@@ -81,31 +81,33 @@ void ATSP::print() {
 
 }
 
-ATSP *ATSP::BB(const Graph *g) {
-    auto dim = g->getPoints();
+ATSP *ATSP::BB(const Graph *graph) {
+    auto dim = graph->getPoints();
     veci visited;
-    auto perm = new Permutation(dim);
-    auto gra = new Graph(*g);
+    Graph *temp_graph;
+    auto best_graph = new Graph(*graph);
+    auto best_permutation = new Permutation(dim);
     auto tab = new int[dim];
+
     for (auto row = 0; row < dim; row++) {
         visited.clear();
         visited.push_back(row);
 
-        Graph *g1 = new Graph(*g);
+        temp_graph = new Graph(*graph);
 
-        reduce(g1);
+        reduce(temp_graph);
 
         for (auto i = 0; i < dim; i++) {
-            g1->setWeight(i, row, -1);
+            temp_graph->setWeight(i, row, -1);
         }
 
         int col, r;
         for (auto i = 1; i < dim; i++) {
             r = visited.back();
-            col = find_min(g1, r);
+            col = find_min(temp_graph, r);
             visited.push_back(col);
 
-            set_infty(g1, r, col);
+            set_infty(temp_graph, r, col);
         }
 
         while (visited.front() != 0) {
@@ -113,20 +115,19 @@ ATSP *ATSP::BB(const Graph *g) {
             rotate(begin, begin + 1, visited.end());
         }
 
-        auto g2 = new Graph(dim);
-        new_graph(g, g2, visited);
+        new_graph(graph, temp_graph, visited);
 
         copy(visited.begin(), visited.end(), tab);
         auto p = new Permutation(dim, tab);
 
 
-        if (*g2 < *gra) {
-            *gra = *g2;
-            *perm = *p;
+        if (*temp_graph < *best_graph) {
+            *best_graph = *temp_graph;
+            *best_permutation = *p;
         }
     }
 
-    return new ATSP(perm, gra);
+    return new ATSP(best_permutation, best_graph);
 }
 
 int ATSP::reduce(Graph *graph) {

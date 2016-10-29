@@ -21,8 +21,9 @@ void Menu::tspMenu() {
         printf("\n\nProblem komiwojazera:\n"
                        "[1] Laduj Plik\n"
                        "[2] Generuj Dane\n"
-                       "[3] Algorytm Przegladu Zupelnego\n"
-                       "[4] Algorytm Podzialu i Ograniczen\n"
+                       "[3] Zapisz Graf\n"
+                       "[4] Algorytm Przegladu Zupelnego\n"
+                       "[5] Algorytm Podzialu i Ograniczen\n"
                        "[0] Zakoncz\n"
                        "Wybierz: ");
         check = scanf("%d", &op);
@@ -41,8 +42,13 @@ void Menu::tspMenu() {
                 data->print();
                 break;
             case 3:
+                if (File::save(*data))
+                    puts("zapisano");
+                else puts("\nbrak grafu");
+                break;
+            case 4:
                 if (data->getPoints() == 0) {
-                    printf("\nBrak grafu\n");
+                    puts("\nbrak grafu");
                     continue;
                 }
 
@@ -52,9 +58,9 @@ void Menu::tspMenu() {
                 ATSP::BruteForce(data)->print();
                 fflush(stdin);
                 break;
-            case 4:
+            case 5:
                 if (data->getPoints() == 0) {
-                    printf("\nBrak grafu\n");
+                    puts("\nbrak grafu");
                     continue;
                 }
 

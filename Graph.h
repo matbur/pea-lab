@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -43,4 +44,6 @@ public:
     void setWeight(int row, int col, int weight);
 
     void print() const;
+
+    std::string toString() const;
 };

@@ -1,3 +1,4 @@
+#include <fstream>
 #include "File.h"
 
 
@@ -46,6 +47,29 @@ bool File::load(Graph &data) {
     cout << "Podaj nazwe pliku: ";
     cin >> fileName;
     return load(fileName, data);
+}
+
+bool File::save(Graph &data) {
+    if (data.getPoints() < 2) {
+        return false;
+    }
+
+    string fileName;
+    cout << "Podaj nazwe pliku: ";
+    cin >> fileName;
+    return save(fileName, data);
+}
+
+bool File::save(const string &fileName, Graph &data) {
+
+    ofstream file;
+    file.open(fileName);
+
+    file << data.toString();
+
+    file.close();
+
+    return true;
 }
 
 

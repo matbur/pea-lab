@@ -19,5 +19,8 @@ int main() {
     Menu::tspMenu();
 //    testBB();
 
+//    auto g = new Graph(4);
+//    cout << g->toString() ;
+
     return 0;
 }

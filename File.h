@@ -16,5 +16,9 @@ public:
 
     //Laduje dane z pliku dla problemu komiwojazera
     static bool load(const string &fileName, Graph &data);
+
+    static bool save(Graph &data);
+
+    static bool save(const string &fileName, Graph &data);
 };
 

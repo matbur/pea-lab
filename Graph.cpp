@@ -148,3 +148,21 @@ int Graph::getWeight(int row, int col) const {
 void Graph::setWeight(int row, int col, int weight) {
     weights[row][col] = weight;
 }
+
+std::string Graph::toString() const {
+    auto dim = getPoints();
+    std::string graph = std::to_string(dim) + "\n";
+    std::string item;
+
+    for (auto row = 0; row < dim; row++) {
+        for (auto col = 0; col < dim; col++) {
+            item = std::to_string(getWeight(row, col));
+            while (item.length() < 3) {
+                item = " " + item;
+            }
+            graph += item;
+        }
+        graph += "\n";
+    }
+    return graph;
+}

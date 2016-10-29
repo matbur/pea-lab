@@ -12,12 +12,28 @@ class ATSP {
     Permutation *permutation;
     Graph *graph;
 
+    /**
+     * Metoda redukuje wszystkie dlugosci drog
+     * w rzedach i kolumnach
+     */
     static int reduce(Graph *graph);
 
+    /**
+     * Metoda na podstawie grafu i rzedu zwraca
+     * najbardziej obiecujacy nastepny punkt
+     */
     static int find_min(Graph *graph, int row);
 
+    /**
+     * Metoda wstawia oo w calym rzedzie i kolumnie tak,
+     * by te drogi nie byly pozniej uwzgledniane w szukaniu tras
+     */
     static void set_infty(Graph *graph, int row, int col);
 
+    /**
+     * Metoda wypelnia nowy graf ze starego wedlug
+     * danych z wektora odwiedzonych miast
+     */
     static void new_graph(const Graph *old_graph, Graph *graph, veci v);
 
 public:
@@ -38,7 +54,7 @@ public:
     /**
      * Rozwiazanie problemu algorytmem Podzialu i Ograniczen.
      */
-    static ATSP *BB(const Graph *g);
+    static ATSP *BB(const Graph *graph);
 
     void print();
 };
