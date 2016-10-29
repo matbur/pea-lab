@@ -19,11 +19,12 @@ void Menu::tspMenu() {
         printError(err);
         err = 0;
         printf("\n\nProblem komiwojazera:\n"
-                       "[1] Algorytm Przegladu Zupelnego\n"
-                       "[2] Algorytm Zachlanny\n"
-                       "[3] Generuj Dane\n"
-                       "[4] Laduj Plik\n"
-                       "[0] Powrot\nWybierz: ");
+                       "[1] Laduj Plik\n"
+                       "[2] Generuj Dane\n"
+                       "[3] Algorytm Przegladu Zupelnego\n"
+                       "[4] Algorytm Podzialu i Ograniczen\n"
+                       "[0] Zakoncz\n"
+                       "Wybierz: ");
         check = scanf("%d", &op);
         if (check != 1) {
             err = -1;
@@ -32,6 +33,14 @@ void Menu::tspMenu() {
         }
         switch (op) {
             case 1:
+                File::load(*data);
+                data->print();
+                break;
+            case 2:
+                err = tspGenerate(data);
+                data->print();
+                break;
+            case 3:
                 if (data->getPoints() == 0) {
                     printf("\nBrak grafu\n");
                     continue;
@@ -43,7 +52,7 @@ void Menu::tspMenu() {
                 ATSP::BruteForce(data)->print();
                 fflush(stdin);
                 break;
-            case 2:
+            case 4:
                 if (data->getPoints() == 0) {
                     printf("\nBrak grafu\n");
                     continue;
@@ -52,16 +61,8 @@ void Menu::tspMenu() {
                 printf("Caly graf:\n");
                 data->print();
 
-                ATSP::Greedy(data)->print();
+                ATSP::BB(data)->print();
                 fflush(stdin);
-                break;
-            case 3:
-                err = tspGenerate(data);
-                data->print();
-                break;
-            case 4:
-                File::loadTspFile(*data);
-                data->print();
                 break;
             default:
                 err = 1;
@@ -74,13 +75,10 @@ int Menu::tspGenerate(Graph *data) {
     int size;
     cout << "Podaj ilosc miast: ";
     int check = scanf("%d", &size);
-    cout << "Skierowany? [1]Nie [2]Tak: ";
-    int oneway;
-    check += scanf("%d", &oneway);
-    if (check != 2) {
+    if (check != 1) {
         data->generate(0);
         return -1;
     }
-    data->generate(size, bool(oneway - 1));
+    data->generate(size, true);
     return 0;
 }

@@ -40,5 +40,7 @@ public:
 
     int getWeight(int row, int col) const;
 
+    void setWeight(int row, int col, int weight);
+
     void print() const;
 };

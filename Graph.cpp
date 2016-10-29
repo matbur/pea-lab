@@ -102,8 +102,8 @@ int Graph::getWeightsSum() const {
 }
 
 void Graph::print() const {
-    printf("Rozmiar grafu: %d\n", points);
-    puts("Sasiedzi:");
+    printf("Rozmiar: %d\n", points);
+    puts("Macierz sasiedztwa:");
 
     printf("  W ");
     for (auto i = 0; i < points; i++)
@@ -127,7 +127,7 @@ void Graph::print() const {
 void Graph::generate(int points, bool oneway /*= false*/) {
     if (points < 2) return;                             // musi byc conajmniej jedna krawedz
 
-    auto maxWeight = 100;                               // wagi z zakresu [1, 100]
+    auto maxWeight = 99;                               // wagi z zakresu [1, 99]
 
     reset(points);                                      // wyzerowanie
 
@@ -143,4 +143,8 @@ void Graph::generate(int points, bool oneway /*= false*/) {
 
 int Graph::getWeight(int row, int col) const {
     return weights[row][col];
+}
+
+void Graph::setWeight(int row, int col, int weight) {
+    weights[row][col] = weight;
 }

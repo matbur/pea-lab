@@ -12,7 +12,7 @@ class File {
 
 public:
     //Laduje dane z pliku dla problemu komiwojazera
-    static bool loadTspFile(Graph &data);
+    static bool load(Graph &data);
 
     //Laduje dane z pliku dla problemu komiwojazera
     static bool load(const string &fileName, Graph &data);

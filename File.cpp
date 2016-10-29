@@ -19,7 +19,7 @@ bool File::load(const string &fileName, Graph &data) {
                 check = fscanf(filePtr, "%d", &value);
                 if (check == 1) {
                     if (value != 0 and value != -1)
-                        data.addEdge(it, i, value);
+                        data.addEdge(it, i, value, true);
                 } else {
                     data.reset(0);
                     cout << "Blad wczytywania z pliku! Nieprawidlowa ilsoc parametrow!" << endl;
@@ -41,7 +41,7 @@ bool File::load(const string &fileName, Graph &data) {
     return true;
 }
 
-bool File::loadTspFile(Graph &data) {
+bool File::load(Graph &data) {
     string fileName;
     cout << "Podaj nazwe pliku: ";
     cin >> fileName;

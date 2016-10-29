@@ -1,6 +1,10 @@
+#include <algorithm>
 #include "ATSP.h"
 
-ATSP::ATSP(Permutation *p, Graph *g) : permutation(p), graph(g) { }
+using namespace std;
+
+
+ATSP::ATSP(Permutation *p, Graph *g) : permutation(p), graph(g) {}
 
 ATSP *ATSP::BruteForce(const Graph *graph) {
     auto n = graph->getPoints();                                            // ilosc miast do odwiedzenia
@@ -76,3 +80,140 @@ void ATSP::print() {
     graph->print();
 
 }
+
+ATSP *ATSP::BB(const Graph *g) {
+    auto dim = g->getPoints();
+    veci visited;
+    auto perm = new Permutation(dim);
+    auto gra = new Graph(*g);
+    auto tab = new int[dim];
+    for (auto row = 0; row < dim; row++) {
+        visited.clear();
+        visited.push_back(row);
+
+        Graph *g1 = new Graph(*g);
+
+        reduce(g1);
+
+        for (auto i = 0; i < dim; i++) {
+            g1->setWeight(i, row, -1);
+        }
+
+        int col, r;
+        for (auto i = 1; i < dim; i++) {
+            r = visited.back();
+            col = find_min(g1, r);
+            visited.push_back(col);
+
+            set_infty(g1, r, col);
+        }
+
+        while (visited.front() != 0) {
+            auto begin = visited.begin();
+            rotate(begin, begin + 1, visited.end());
+        }
+
+        auto g2 = new Graph(dim);
+        new_graph(g, g2, visited);
+
+        copy(visited.begin(), visited.end(), tab);
+        auto p = new Permutation(dim, tab);
+
+
+        if (*g2 < *gra) {
+            *gra = *g2;
+            *perm = *p;
+        }
+    }
+
+    return new ATSP(perm, gra);
+}
+
+int ATSP::reduce(Graph *graph) {
+    int dim = graph->getPoints();
+    int lb = 0;
+    int min;
+    int temp;
+
+    for (auto row = 0; row < dim; row++) {
+        min = INT_MAX;
+        for (auto col = 0; col < dim; col++) {
+            temp = graph->getWeight(row, col);
+            if (temp < min and temp >= 0)
+                min = temp;
+        }
+        for (auto col = 0; col < dim; col++) {
+            temp = graph->getWeight(row, col);
+            if (temp > 0)
+                graph->setWeight(row, col, temp - min);
+        }
+        if (min < INT_MAX) {
+            lb += min;
+        }
+    }
+    for (auto col = 0; col < dim; col++) {
+        min = INT_MAX;
+        for (auto row = 0; row < dim; row++) {
+            temp = graph->getWeight(row, col);
+            if (temp < min and temp >= 0)
+                min = temp;
+        }
+        for (auto row = 0; row < dim; row++) {
+            temp = graph->getWeight(row, col);
+            if (temp > 0)
+                graph->setWeight(row, col, temp - min);
+        }
+        if (min < INT_MAX) {
+            lb += min;
+        }
+    }
+
+    return lb;
+}
+
+int ATSP::find_min(Graph *graph, int row) {
+    auto dim = graph->getPoints();
+    Graph *temp_graph;
+    veci min_row((unsigned long) dim);
+    int temp;
+
+    for (auto col = 0; col < dim; col++) {
+        temp_graph = new Graph(*graph);
+        temp = temp_graph->getWeight(row, col);
+        if (temp == -1) {
+            min_row[col] = INT_MAX;
+            continue;
+        }
+        set_infty(temp_graph, row, col);
+        temp += reduce(temp_graph);
+
+        min_row[col] = temp;
+    }
+
+    auto begin = min_row.begin();
+    auto last = min_row.end();
+    auto min = *min_element(begin, last);           // Znajdz najmniejszy element
+    return find(begin, last, min) - begin;          // i zwroc jego index
+}
+
+void ATSP::set_infty(Graph *graph, int row, int col) {
+    auto dim = graph->getPoints();
+    graph->setWeight(col, row, -1);
+    for (auto i = 0; i < dim; i++) {
+        graph->setWeight(i, col, -1);
+        graph->setWeight(row, i, -1);
+    }
+}
+
+void ATSP::new_graph(const Graph *old_graph, Graph *graph, veci v) {
+    auto row = v.back();
+    auto col = v.front();
+    graph->setWeight(row, col, old_graph->getWeight(row, col));
+    auto dim = old_graph->getPoints();
+    for (auto i = 1; i < dim; i++) {
+        row = v[i - 1];
+        col = v[i];
+        graph->setWeight(row, col, old_graph->getWeight(row, col));
+    }
+}
+
