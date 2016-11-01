@@ -8,6 +8,9 @@ pro: main.cpp $(OBJ)
 	g++ $(FLAGS) -c $< -o $@
 
 
+test: test.cpp $(OBJ)
+	g++ $(FLAGS) $^ -o $@
+
 .PHONY: clean
 clean:
 	rm *.o pro

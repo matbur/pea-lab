@@ -218,3 +218,7 @@ void ATSP::new_graph(const Graph *old_graph, Graph *graph, veci v) {
     }
 }
 
+int ATSP::get_sum_weights() {
+    return graph->getWeightsSum();
+}
+

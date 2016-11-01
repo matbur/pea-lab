@@ -57,4 +57,6 @@ public:
     static ATSP *BB(const Graph *graph);
 
     void print();
+
+    int get_sum_weights();
 };
