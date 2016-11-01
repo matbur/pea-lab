@@ -49,13 +49,13 @@ void test() {
             atsp = ATSP::BruteForce(graph);
             t1 = get_time();
 
-            s1 = atsp->get_solution();
+            s1 = atsp->get_sum_weights();
 
             t2 = get_time();
             atsp = ATSP::BB(graph);
             t3 = get_time();
 
-            s2 = atsp->get_solution();
+            s2 = atsp->get_sum_weights();
 
             cout << path << " "
                  << t1 - t0 << " "
