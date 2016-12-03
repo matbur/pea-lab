@@ -222,3 +222,48 @@ int ATSP::get_sum_weights() {
     return graph->getWeightsSum();
 }
 
+
+ATSP *ATSP::Dynamic(const Graph *graph) {
+    auto n = graph->getPoints();
+
+
+}
+
+seti *ATSP::create_set(int *input, int pos) {
+    if (pos == 0)
+        return new seti;
+
+    seti *set = new seti;
+    for (auto i = 0; i < pos; i++) {
+        set->insert(input[i]);
+    }
+    return set;
+}
+
+void ATSP::generate_combination(int len, int *input, int start, int pos, std::list<seti *> *all_sets, int *result) {
+    if (pos == len + 1) {
+        return;
+    }
+
+    seti *set = create_set(result, pos);
+    all_sets->push_back(set);
+    for (auto i = start; i < len; i++) {
+        result[pos] = input[i];
+        generate_combination(len, input, i + 1, pos + 1, all_sets, result);
+    }
+}
+
+std::list<seti *> *ATSP::generate_combination(int n) {
+    int *input = new int[n];
+    for (auto i = 0; i < n; i++) {
+        input[i] = i + 1;
+    }
+//    list *all_sets = std::list<seti*>;
+    auto all_sets = new list<seti *>;
+    int *result = new int[n];
+    generate_combination(n, input, 0, 0, all_sets, result);
+    return all_sets;
+}
+
+
+

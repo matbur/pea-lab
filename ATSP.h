@@ -2,11 +2,14 @@
 
 #include <cmath>
 #include <vector>
+#include <set>
 
 #include "Graph.h"
 #include "Permutation.h"
+#include <list>
 
 typedef std::vector<int> veci;
+typedef std::set<int> seti;
 
 class ATSP {
     Permutation *permutation;
@@ -59,4 +62,15 @@ public:
     void print();
 
     int get_sum_weights();
+
+
+    static ATSP *Dynamic(const Graph *graph);
+
+    static seti *create_set(int *input, int pos);
+
+    static void generate_combination(int len, int *input, int start, int pos, std::list<seti *> *all_sets, int *result);
+
+    static std::list<seti *> *generate_combination(int n);
+
+//    static int get_cost(seti* set, int prev_vertex, std::map<)
 };

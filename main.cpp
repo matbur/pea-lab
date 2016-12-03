@@ -7,7 +7,17 @@
 int main() {
     srand((unsigned int) time(nullptr));
 
-    Menu::tspMenu();
+//    Menu::tspMenu();
+    auto comb = ATSP::generate_combination(3);
+    auto c1 = comb[0];
+    set<int>::iterator i;
+    for (auto s: c1) {
+        for (i = s->begin(); i != s->end(); i++){
+            cout << *i << ' ';
+        }
+        puts("");
+    }
+
 
     return 0;
 }
