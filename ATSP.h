@@ -7,9 +7,21 @@
 #include "Graph.h"
 #include "Permutation.h"
 #include <list>
+#include <map>
 
 typedef std::vector<int> veci;
+typedef std::vector<veci> vveci;
+
 typedef std::set<int> seti;
+
+struct cmpMapvv {
+    bool operator()(const veci &a, const veci &b) const {
+        return a.size() == b.size() ? a < b : a.size() < b.size();
+    }
+};
+
+typedef std::map<veci, veci, cmpMapvv> mapvv;
+//typedef std::map<veci, veci> mapvv;
 
 class ATSP {
     Permutation *permutation;
@@ -49,12 +61,6 @@ public:
     static ATSP *BruteForce(const Graph *graph);
 
     /**
-     * Rozwiazanie problemu algorytmem zachlannym.
-     * Szybkie, ale nie ma gwarancji na optymalny wynik.
-     */
-    static ATSP *Greedy(const Graph *graph, int start = 0);
-
-    /**
      * Rozwiazanie problemu algorytmem Podzialu i Ograniczen.
      */
     static ATSP *BB(const Graph *graph);
@@ -66,11 +72,16 @@ public:
 
     static ATSP *Dynamic(const Graph *graph);
 
-    static seti *create_set(int *input, int pos);
+    static vveci get_sets(int n, int r);
 
-    static void generate_combination(int len, int *input, int start, int pos, std::list<seti *> *all_sets, int *result);
+    static vveci get_permutations(veci vec);
 
-    static std::list<seti *> *generate_combination(int n);
+    static bool is_in(veci vec, int val);
 
-//    static int get_cost(seti* set, int prev_vertex, std::map<)
+    static mapvv generate_subsets(int n);
+
+    static mapvv fill_map(Graph graph);
+
+    static void print_vec(veci vec, std::string c = "\n");
+
 };

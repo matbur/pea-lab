@@ -35,37 +35,6 @@ ATSP *ATSP::BruteForce(const Graph *graph) {
     return new ATSP(minPerm, minGraph);
 }
 
-ATSP *ATSP::Greedy(const Graph *graph, int start /*= 0*/) {
-    auto n = graph->getPoints();                                            // ilosc miast do odwiedzenia
-
-    if (start >= n)                                                         // wiercholek starowy musi istniec
-        return nullptr;
-
-    auto minGraph = new Graph(n);                                           // graf z najkrotsza droga
-    int *permTab = new int[n];                                              // permutacja z najkrotsza droga
-
-    auto visited = new bool[n]{false};                                      // tablica odwiedzonych
-
-    int min, temp, current = start, next = start;
-    for (auto i = 0; i < n; i++) {
-        visited[current] = true;                                            // oznacz jako odwiedzone
-        permTab[i] = current;                                               // ustawienie elementu w permutacji
-        min = INT_MAX;                                                      // zeby potem zmniejszyc
-        for (auto col = 0; col < n; col++) {
-            temp = graph->getWeight(current, col);
-            if (temp != -1 and temp < min and !visited[col]) {              // jesli jeszcze wierzcholek nie odwiedzony
-                min = temp;                                                 // wartosc minimalnej krawedzi
-                next = col;                                                 // indeks minimalnej krawedzi
-            }
-        }
-        minGraph->addEdge(current, next, min, true);                        // dodanie krawedzi do grafu koncowego
-        current = next;                                                     // ustawienie nastepnego elementu
-    }
-    minGraph->addEdge(current, start, graph->getWeight(current, start), true);   // dodanie ostatniej krawedzi
-
-    delete[] visited;
-    return new ATSP(new Permutation(n, permTab), minGraph);
-}
 
 void ATSP::print() {
     if (!this) {
@@ -229,41 +198,165 @@ ATSP *ATSP::Dynamic(const Graph *graph) {
 
 }
 
-seti *ATSP::create_set(int *input, int pos) {
-    if (pos == 0)
-        return new seti;
+//vveci ATSP::get_sets(int dim, int r) {
+//    auto v = vector<veci>();
+//
+//    auto indices = veci();
+//    for (auto i = 0; i < r; i++) {
+//        indices.push_back(i);
+//    }
+//
+//    auto pool = veci();
+//    for (auto i = 1; i < dim; i++) {
+//        pool.push_back(i);
+//    }
+//
+//    auto p = veci();
+//    for (auto i: indices)
+//        p.push_back(pool[i]);
+//    v.push_back(p);
+//
+//    while (1) {
+//        int i;
+//        auto flag = true;
+//        for (i = r - 1; i > -1; i--) {
+//            if (indices[i] != i + dim - 1 - r) {
+//                flag = false;
+//                break;
+//            }
+//        }
+//        if (flag)
+//            return v;
+//
+//        indices[i] += 1;
+//        for (auto j = i + 1; j < r; j++)
+//            indices[j] = indices[j - 1] + 1;
+//        auto p = veci();
+//        for (auto i: indices)
+//            p.push_back(pool[i]);
+//        v.push_back(p);
+//    }
+//}
 
-    seti *set = new seti;
-    for (auto i = 0; i < pos; i++) {
-        set->insert(input[i]);
-    }
-    return set;
+vveci ATSP::get_sets(int n, int r) {
+    auto output = vveci();
+    n--;
+
+    std::vector<bool> selectors((unsigned long) n);
+    std::fill(selectors.begin(), selectors.begin() + r, true);
+
+    veci temp;
+    do {
+        temp = veci();
+        for (auto i = 0; i < n; i++) {
+            if (selectors[i]) {
+                temp.push_back(i + 1);
+            }
+        }
+        output.push_back(temp);
+    } while (std::prev_permutation(selectors.begin(), selectors.end()));
+
+    return output;
 }
 
-void ATSP::generate_combination(int len, int *input, int start, int pos, std::list<seti *> *all_sets, int *result) {
-    if (pos == len + 1) {
-        return;
-    }
+vveci ATSP::get_permutations(veci vec) {
+    auto output = vveci();
 
-    seti *set = create_set(result, pos);
-    all_sets->push_back(set);
-    for (auto i = start; i < len; i++) {
-        result[pos] = input[i];
-        generate_combination(len, input, i + 1, pos + 1, all_sets, result);
-    }
+    auto temp = veci(vec);
+    do {
+        output.push_back(temp);
+    } while (std::next_permutation(temp.begin(), temp.end()));
+
+    return output;
 }
 
-std::list<seti *> *ATSP::generate_combination(int n) {
-    int *input = new int[n];
+mapvv ATSP::generate_subsets(int n) {
+    auto output = mapvv();
+
+    vector<int> temp;
     for (auto i = 0; i < n; i++) {
-        input[i] = i + 1;
+        for (auto j: get_sets(n, i)) {
+            for (auto k = 1; k < n; k++) {
+                if (is_in(j, k)) {
+                    continue;
+                }
+                temp = j;
+                temp.insert(temp.begin(), k);
+                output[temp] = veci(2);
+            }
+        }
     }
-//    list *all_sets = std::list<seti*>;
-    auto all_sets = new list<seti *>;
-    int *result = new int[n];
-    generate_combination(n, input, 0, 0, all_sets, result);
-    return all_sets;
+
+    temp = veci();
+    for (auto i = 0; i < n; i++) {
+        temp.push_back(i);
+    }
+    output[temp] = veci(2);
+
+    return output;
 }
 
+bool ATSP::is_in(veci vec, int val) {
+    for (auto i: vec) {
+        if (i == val) {
+            return true;
+        }
+    }
+    return false;
+}
 
+void ATSP::print_vec(veci vec, std::string c) {
+    std::cout << "(";
+    for (auto i: vec) {
+        std::cout << i << ", ";
+    }
+    std::cout << ")" << c;
+}
 
+mapvv ATSP::fill_map(Graph graph) {
+    auto n = graph.getPoints();
+
+    auto map = generate_subsets(n);
+
+    veci set, min, temp_min, temp_sorted;
+    min = veci(2);
+    temp_min = veci(2);
+    int city, first;
+    for (auto &item: map) {
+        city = item.first[0];
+        if (item.first.size() == 1) {
+            item.second = {graph.getWeight(0, city), 0};
+            continue;
+        }
+
+        set = item.first;
+        set.erase(set.begin());
+
+        first = set[0];
+        min = {map[set][0] + graph.getWeight(first, city), first};
+
+        for (auto perm: get_permutations(set)) {
+            first = perm[0];
+            std::sort(perm.begin() + 1, perm.end());
+            perm = {map[perm][0] + graph.getWeight(first, city), first};
+            if (perm < min)
+                min = perm;
+        }
+//        do {
+//            first = set[0];
+//
+//            temp_sorted = set;
+//            std::sort(temp_sorted.begin() + 1, temp_sorted.end());
+//
+//            temp_min = {map[temp_sorted][0] + graph.getWeight(first, city), first};
+//
+//            if (temp_min < min) {
+//                min = temp_min;
+//            }
+//        } while (std::next_permutation(set.begin(), set.end()));
+
+        item.second = min;
+    }
+
+    return map;
+}

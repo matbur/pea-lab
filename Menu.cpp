@@ -58,18 +58,6 @@ void Menu::tspMenu() {
                 ATSP::BruteForce(data)->print();
                 fflush(stdin);
                 break;
-            case 5:
-                if (data->getPoints() == 0) {
-                    puts("\nbrak grafu");
-                    continue;
-                }
-
-                printf("Caly graf:\n");
-                data->print();
-
-                ATSP::BB(data)->print();
-                fflush(stdin);
-                break;
             default:
                 err = 1;
                 break;

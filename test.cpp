@@ -39,7 +39,7 @@ void test() {
     int s1, s2;
     long t0, t1, t2, t3;
     for (auto size = 4; size < 13; size++) {
-        for (auto i = 0; i < 30; i++) {
+        for (auto i = 0; i < 1; i++) {
             str = to_string(size);
             path = "data/" + str + "/" + str + "_" + to_string(i) + ".tsp";
             graph = new Graph();
@@ -52,7 +52,7 @@ void test() {
             s1 = atsp->get_sum_weights();
 
             t2 = get_time();
-            atsp = ATSP::BB(graph);
+//            atsp = ATSP::BB(graph);
             t3 = get_time();
 
             s2 = atsp->get_sum_weights();
@@ -69,7 +69,7 @@ void test() {
 int main() {
     srand((unsigned int) time(nullptr));
 
-    generate();
+//    generate();
     test();
 
     return 0;
