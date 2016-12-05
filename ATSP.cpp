@@ -259,17 +259,6 @@ vveci ATSP::get_sets(int n, int r) {
     return output;
 }
 
-vveci ATSP::get_permutations(veci vec) {
-    auto output = vveci();
-
-    auto temp = veci(vec);
-    do {
-        output.push_back(temp);
-    } while (std::next_permutation(temp.begin(), temp.end()));
-
-    return output;
-}
-
 mapvv ATSP::generate_subsets(int n) {
     auto output = mapvv();
 
@@ -322,6 +311,7 @@ mapvv ATSP::fill_map(Graph graph) {
     min = veci(2);
     temp_min = veci(2);
     int city, first;
+
     for (auto &item: map) {
         city = item.first[0];
         if (item.first.size() == 1) {
@@ -335,25 +325,18 @@ mapvv ATSP::fill_map(Graph graph) {
         first = set[0];
         min = {map[set][0] + graph.getWeight(first, city), first};
 
-        for (auto perm: get_permutations(set)) {
-            first = perm[0];
-            std::sort(perm.begin() + 1, perm.end());
-            perm = {map[perm][0] + graph.getWeight(first, city), first};
-            if (perm < min)
-                min = perm;
+        for (auto i = 0; i < set.size(); i++) {
+            temp_sorted = set;
+
+            std::swap(temp_sorted[0], temp_sorted[i]);
+            std::sort(temp_sorted.begin() + 1, temp_sorted.end());
+
+            first = temp_sorted[0];
+            temp_sorted = {map[temp_sorted][0] + graph.getWeight(first, city), first};
+            if (temp_sorted < min) {
+                min = temp_sorted;
+            }
         }
-//        do {
-//            first = set[0];
-//
-//            temp_sorted = set;
-//            std::sort(temp_sorted.begin() + 1, temp_sorted.end());
-//
-//            temp_min = {map[temp_sorted][0] + graph.getWeight(first, city), first};
-//
-//            if (temp_min < min) {
-//                min = temp_min;
-//            }
-//        } while (std::next_permutation(set.begin(), set.end()));
 
         item.second = min;
     }

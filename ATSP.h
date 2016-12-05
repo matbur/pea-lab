@@ -74,8 +74,6 @@ public:
 
     static vveci get_sets(int n, int r);
 
-    static vveci get_permutations(veci vec);
-
     static bool is_in(veci vec, int val);
 
     static mapvv generate_subsets(int n);
