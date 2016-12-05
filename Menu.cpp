@@ -24,6 +24,7 @@ void Menu::tspMenu() {
                        "[3] Zapisz Graf\n"
                        "[4] Algorytm Przegladu Zupelnego\n"
                        "[5] Algorytm Podzialu i Ograniczen\n"
+                       "[6] Algorytm Dynamiczny\n"
                        "[0] Zakoncz\n"
                        "Wybierz: ");
         check = scanf("%d", &op);
@@ -56,6 +57,30 @@ void Menu::tspMenu() {
                 data->print();
 
                 ATSP::BruteForce(data)->print();
+                fflush(stdin);
+                break;
+            case 5:
+                if (data->getPoints() == 0) {
+                    puts("\nbrak grafu");
+                    continue;
+                }
+
+                printf("Caly graf:\n");
+                data->print();
+
+                ATSP::BB(data)->print();
+                fflush(stdin);
+                break;
+            case 6:
+                if (data->getPoints() == 0) {
+                    puts("\nbrak grafu");
+                    continue;
+                }
+
+                printf("Caly graf:\n");
+                data->print();
+
+                ATSP::Dynamic(data)->print();
                 fflush(stdin);
                 break;
             default:

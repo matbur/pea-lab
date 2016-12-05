@@ -5,7 +5,7 @@ Permutation::Permutation(int length) : length(length), tab(new int[length]) {
         tab[i] = i;
 }
 
-Permutation::Permutation(int n, int *tab) : length(n), tab(tab) { }
+Permutation::Permutation(int n, int *tab) : length(n), tab(tab) {}
 
 Permutation::~Permutation() {
     delete[] tab;
@@ -72,6 +72,13 @@ void Permutation::printTab() {
         printf("%d, ", tab[i]);
 
     printf("%d>\n", tab[i]);
+}
+
+Permutation::Permutation(std::vector<int> vec)
+        : length((int) vec.size()), tab(new int[length]) {
+    for (auto i = 0; i < length; i++) {
+        tab[i] = vec[i];
+    }
 }
 
 

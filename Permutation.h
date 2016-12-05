@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "iostream"
 
 
@@ -12,6 +13,8 @@ public:
     Permutation(int length);
 
     Permutation(int n, int *tab);
+
+    Permutation(std::vector<int> vec);
 
     ~Permutation();
 

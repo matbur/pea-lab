@@ -1,8 +1,6 @@
 #include <algorithm>
 #include "ATSP.h"
 
-using namespace std;
-
 
 ATSP::ATSP(Permutation *p, Graph *g) : permutation(p), graph(g) {}
 
@@ -81,7 +79,7 @@ ATSP *ATSP::BB(const Graph *graph) {
 
         while (visited.front() != 0) {
             auto begin = visited.begin();
-            rotate(begin, begin + 1, visited.end());
+            std::rotate(begin, begin + 1, visited.end());
         }
 
         new_graph(graph, temp_graph, visited);
@@ -195,48 +193,24 @@ int ATSP::get_sum_weights() {
 ATSP *ATSP::Dynamic(const Graph *graph) {
     auto n = graph->getPoints();
 
+    auto map = generate_subsets(n);
+    map = fill_map(*graph, map);
 
+//    for (auto i: map) {
+//        ATSP::print_vec(i.first, ": ");
+//        ATSP::print_vec(i.second);
+//    }
+
+    auto vec = map.rbegin()->second;
+    vec.erase(vec.begin());
+    std::reverse(vec.begin(), vec.end());
+
+    auto g = new Graph(n);
+    new_graph(graph, g, vec);
+
+    return new ATSP(new Permutation(vec), g);
 }
 
-//vveci ATSP::get_sets(int dim, int r) {
-//    auto v = vector<veci>();
-//
-//    auto indices = veci();
-//    for (auto i = 0; i < r; i++) {
-//        indices.push_back(i);
-//    }
-//
-//    auto pool = veci();
-//    for (auto i = 1; i < dim; i++) {
-//        pool.push_back(i);
-//    }
-//
-//    auto p = veci();
-//    for (auto i: indices)
-//        p.push_back(pool[i]);
-//    v.push_back(p);
-//
-//    while (1) {
-//        int i;
-//        auto flag = true;
-//        for (i = r - 1; i > -1; i--) {
-//            if (indices[i] != i + dim - 1 - r) {
-//                flag = false;
-//                break;
-//            }
-//        }
-//        if (flag)
-//            return v;
-//
-//        indices[i] += 1;
-//        for (auto j = i + 1; j < r; j++)
-//            indices[j] = indices[j - 1] + 1;
-//        auto p = veci();
-//        for (auto i: indices)
-//            p.push_back(pool[i]);
-//        v.push_back(p);
-//    }
-//}
 
 vveci ATSP::get_sets(int n, int r) {
     auto output = vveci();
@@ -262,7 +236,7 @@ vveci ATSP::get_sets(int n, int r) {
 mapvv ATSP::generate_subsets(int n) {
     auto output = mapvv();
 
-    vector<int> temp;
+    veci temp;
     for (auto i = 0; i < n; i++) {
         for (auto j: get_sets(n, i)) {
             for (auto k = 1; k < n; k++) {
@@ -302,12 +276,8 @@ void ATSP::print_vec(veci vec, std::string c) {
     std::cout << ")" << c;
 }
 
-mapvv ATSP::fill_map(Graph graph) {
-    auto n = graph.getPoints();
-
-    auto map = generate_subsets(n);
-
-    veci set, min, temp_min, temp_sorted;
+mapvv ATSP::fill_map(Graph graph, mapvv map) {
+    veci set, min, temp_min, temp_sorted, temp_set;
     min = veci(2);
     temp_min = veci(2);
     int city, first;
@@ -319,22 +289,37 @@ mapvv ATSP::fill_map(Graph graph) {
             continue;
         }
 
+        auto path = item.second;
+        path.erase(path.begin());
+
         set = item.first;
         set.erase(set.begin());
 
         first = set[0];
         min = {map[set][0] + graph.getWeight(first, city), first};
 
-        for (auto i = 0; i < set.size(); i++) {
+        temp_set = map[set];
+        temp_set.erase(temp_set.begin());
+
+        for (auto k: temp_set)
+            min.push_back(k);
+
+        for (auto i = 1; i < set.size(); i++) {
             temp_sorted = set;
 
             std::swap(temp_sorted[0], temp_sorted[i]);
             std::sort(temp_sorted.begin() + 1, temp_sorted.end());
 
             first = temp_sorted[0];
-            temp_sorted = {map[temp_sorted][0] + graph.getWeight(first, city), first};
-            if (temp_sorted < min) {
-                min = temp_sorted;
+            temp_min = {map[temp_sorted][0] + graph.getWeight(first, city), first};
+
+            temp_set = map[temp_sorted];
+            temp_set.erase(temp_set.begin());
+
+            if (temp_min < min) {
+                min = temp_min;
+                for (auto k: temp_set)
+                    min.push_back(k);
             }
         }
 
@@ -343,3 +328,4 @@ mapvv ATSP::fill_map(Graph graph) {
 
     return map;
 }
+

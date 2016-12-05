@@ -12,8 +12,6 @@
 typedef std::vector<int> veci;
 typedef std::vector<veci> vveci;
 
-typedef std::set<int> seti;
-
 struct cmpMapvv {
     bool operator()(const veci &a, const veci &b) const {
         return a.size() == b.size() ? a < b : a.size() < b.size();
@@ -21,7 +19,6 @@ struct cmpMapvv {
 };
 
 typedef std::map<veci, veci, cmpMapvv> mapvv;
-//typedef std::map<veci, veci> mapvv;
 
 class ATSP {
     Permutation *permutation;
@@ -78,7 +75,7 @@ public:
 
     static mapvv generate_subsets(int n);
 
-    static mapvv fill_map(Graph graph);
+    static mapvv fill_map(Graph graph, mapvv map);
 
     static void print_vec(veci vec, std::string c = "\n");
 
