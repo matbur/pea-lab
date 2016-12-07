@@ -79,4 +79,7 @@ public:
 
     static void print_vec(veci vec, std::string c = "\n");
 
+    static veci get_path(mapvv map);
+
+    static bool are_disjoint(veci outer, veci inner);
 };

@@ -201,10 +201,7 @@ ATSP *ATSP::Dynamic(const Graph *graph) {
 //        ATSP::print_vec(i.second);
 //    }
 
-    auto vec = map.rbegin()->second;
-    vec.erase(vec.begin());
-    std::reverse(vec.begin(), vec.end());
-
+    auto vec = get_path(map);
     auto g = new Graph(n);
     new_graph(graph, g, vec);
 
@@ -222,11 +219,9 @@ vveci ATSP::get_sets(int n, int r) {
     veci temp;
     do {
         temp = veci();
-        for (auto i = 0; i < n; i++) {
-            if (selectors[i]) {
+        for (auto i = 0; i < n; i++)
+            if (selectors[i])
                 temp.push_back(i + 1);
-            }
-        }
         output.push_back(temp);
     } while (std::prev_permutation(selectors.begin(), selectors.end()));
 
@@ -260,11 +255,9 @@ mapvv ATSP::generate_subsets(int n) {
 }
 
 bool ATSP::is_in(veci vec, int val) {
-    for (auto i: vec) {
-        if (i == val) {
+    for (auto i: vec)
+        if (i == val)
             return true;
-        }
-    }
     return false;
 }
 
@@ -277,55 +270,77 @@ void ATSP::print_vec(veci vec, std::string c) {
 }
 
 mapvv ATSP::fill_map(Graph graph, mapvv map) {
-    veci set, min, temp_min, temp_sorted, temp_set;
+    veci set, min, temp_min, sorted, first;
     min = veci(2);
     temp_min = veci(2);
-    int city, first;
+    int city, parent;
 
-    for (auto &item: map) {
-        city = item.first[0];
-        if (item.first.size() == 1) {
+    for (auto &item: map) { ;
+        first = item.first;
+        city = first[0];
+
+        if (first.size() == 1) {
             item.second = {graph.getWeight(0, city), 0};
             continue;
         }
 
-        auto path = item.second;
-        path.erase(path.begin());
+        set = veci(first.begin() + 1, first.end());
 
-        set = item.first;
-        set.erase(set.begin());
-
-        first = set[0];
-        min = {map[set][0] + graph.getWeight(first, city), first};
-
-        temp_set = map[set];
-        temp_set.erase(temp_set.begin());
-
-        for (auto k: temp_set)
-            min.push_back(k);
+        parent = set[0];
+        min = {map[set][0] + graph.getWeight(parent, city), parent};
 
         for (auto i = 1; i < set.size(); i++) {
-            temp_sorted = set;
+            sorted = set;
 
-            std::swap(temp_sorted[0], temp_sorted[i]);
-            std::sort(temp_sorted.begin() + 1, temp_sorted.end());
+            std::swap(sorted[0], sorted[i]);
+            std::sort(sorted.begin() + 1, sorted.end());
 
-            first = temp_sorted[0];
-            temp_min = {map[temp_sorted][0] + graph.getWeight(first, city), first};
+            parent = sorted[0];
+            temp_min = {map[sorted][0] + graph.getWeight(parent, city), parent};
 
-            temp_set = map[temp_sorted];
-            temp_set.erase(temp_set.begin());
-
-            if (temp_min < min) {
+            if (temp_min < min)
                 min = temp_min;
-                for (auto k: temp_set)
-                    min.push_back(k);
-            }
         }
 
         item.second = min;
     }
 
     return map;
+}
+
+veci ATSP::get_path(mapvv map) {
+    auto it = map.rbegin();
+    auto vec = veci{it->second[1]};
+
+    auto n = it->first.size() - 1;
+
+    int parent;
+    veci temp, first;
+
+    for (it++; it != map.rend(); it++) {
+        first = it->first;
+        temp = veci(first.begin() + 1, first.end());
+        parent = it->second[1];
+
+        if (first[0] == vec.back()
+            && first.size() == n
+            && !is_in(vec, parent)
+            && are_disjoint(vec, temp)) {
+
+            vec.push_back(parent);
+            n--;
+        }
+    }
+
+    std::reverse(vec.begin(), vec.end());
+    return vec;
+}
+
+bool ATSP::are_disjoint(veci outer, veci inner) {
+    for (auto i: outer)
+        for (auto j: inner)
+            if (i == j)
+                return false;
+    return true;
 }
 

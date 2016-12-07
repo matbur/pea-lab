@@ -57,9 +57,12 @@ void test() {
 
             s2 = atsp->get_sum_weights();
 
+            auto t_dyn = t1 - t0;
+            auto t_bb = t3 - t2;
             cout << path << " "
-                 << t1 - t0 << " "
-                 << t3 - t2 << " "
+                 << t_dyn << " "
+                 << t_bb << " "
+                 << (double) t_dyn / t_bb << " "
                  << s1 << " "
                  << s2 << endl;
         }

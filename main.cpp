@@ -11,9 +11,9 @@ int main() {
     Menu::tspMenu();
 
 //    auto g = Graph();
+//    File::load("5/5_27.tsp", g);
 //    File::load("4.txt", g);
 //    File::load("6/6_0.tsp", g);
-//    File::load("5/5_27.tsp", g);
 //    File::load("8/8_0.tsp", g);
 //    File::load("9/9_0.tsp", g);
 //    File::load("10/10_0.tsp", g);
