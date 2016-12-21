@@ -203,36 +203,43 @@ EdgeList Graph::getNeighbours(int from) const {
     return list;
 }
 
-std::vector<int> Graph::eulerCirc() {
-    std::vector<int> eulerianCircuit;
-    int currentVertex = 0;
-    std::stack<int> vertexStack;
-    std::vector<int> listVerts = avaliableVerts(currentVertex);
-    while (!vertexStack.empty() || listVerts.size()) {
-        if (!listVerts.size()) {
-            eulerianCircuit.push_back(currentVertex);
-            currentVertex = vertexStack.top();
-            vertexStack.pop();
+std::vector<int> Graph::EulerCircuit() {
+    std::vector<int> circuit;
+    std::stack<int> stack;
+    int current = 0;
+    std::vector<int> available = available_vertices(current);
+    while (!stack.empty() || available.size()) {
+        if (!available.size()) {
+            circuit.push_back(current);
+            current = stack.top();
+            stack.pop();
         } else {
-            vertexStack.push(currentVertex);
-            std::vector<int> vertexAdjacencyList = avaliableVerts(currentVertex);
-            weights[currentVertex][vertexAdjacencyList.back()] = -1;
-            currentVertex = vertexAdjacencyList.back();
-
+            stack.push(current);
+            auto last = last_vertex(current);
+            weights[current][last] = -1;
+            current = last;
         }
-        listVerts = avaliableVerts(currentVertex);
+        available = available_vertices(current);
     }
-    return eulerianCircuit;
+    return circuit;
 }
 
-std::vector<int> Graph::avaliableVerts(int vert) {
+std::vector<int> Graph::available_vertices(int vertex) {
     std::vector<int> v;
 
     for (int i = 0; i < points; i++)
-        if (weights[vert][i] > 0)
+        if (weights[vertex][i] > 0)
             v.push_back(i);
-
     return v;
+}
+
+int Graph::last_vertex(int vertex) {
+    for (auto i = points - 1; i > -1; i--) {
+        if (weights[vertex][i] > 0) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 

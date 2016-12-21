@@ -54,7 +54,9 @@ public:
 
     EdgeList getNeighbours(int from) const;
 
-    std::vector<int> eulerCirc();
+    std::vector<int> EulerCircuit();
 
-    std::vector<int> avaliableVerts(int vert);
+    std::vector<int> available_vertices(int vertex);
+
+    int last_vertex(int vertex);
 };

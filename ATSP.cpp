@@ -358,11 +358,7 @@ ATSP *ATSP::Approximation(const Graph *graph) {
     Graph mst(dim);
     Prime(*graph, mst);
 
-//    std::cout << mst.toString() << std::endl;
-
-    auto euler = mst.eulerCirc();
-
-//    print_vec(euler);
+    auto euler = mst.EulerCircuit();
 
     std::vector<bool> visited((unsigned long) dim);
 
@@ -371,24 +367,18 @@ ATSP *ATSP::Approximation(const Graph *graph) {
     visited[*it] = true;
     it++;
 
-    auto itl = path.begin();
-
     while (it != euler.end()) {
         if (!visited[*it]) {
             path.push_back(*it);
-            itl++;
             visited[*it] = true;
         }
         it++;
     }
 
-//    print_vec(path);
     auto g = new Graph(dim);
     new_graph(graph, g, path);
 
     return new ATSP(new Permutation(path), g);
-
-    return nullptr;
 }
 
 
@@ -418,7 +408,7 @@ void ATSP::Prime(const Graph &graph, Graph &outGraph) {
         // get edge with the lowest weight
         Edge best = heap.pop();
         if (best.from == -1)
-            break;
+            return;
 
         // append best edge to outGraph
         outGraph.addEdge(best.from, best.to, best.weight);
