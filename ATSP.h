@@ -6,6 +6,7 @@
 
 #include "Graph.h"
 #include "Permutation.h"
+#include "Heap.h"
 #include <list>
 #include <map>
 
@@ -82,4 +83,9 @@ public:
     static veci get_path(mapvv map);
 
     static bool are_disjoint(veci outer, veci inner);
+
+
+    static ATSP *Approximation(const Graph *graph);
+
+    static void Prime(const Graph &graph, Graph &outGraph);
 };

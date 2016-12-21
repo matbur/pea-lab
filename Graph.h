@@ -5,6 +5,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <climits>
+#include "EdgeList.h"
+
+#include <vector>
 
 class Graph {
     int points;
@@ -33,6 +36,8 @@ public:
 
     void generate(int points, bool oneway = false);
 
+    void generate_euclidean(int points);
+
     bool pointExists(int point) const;
 
     int getWeightsSum() const;
@@ -46,4 +51,10 @@ public:
     void print() const;
 
     std::string toString() const;
+
+    EdgeList getNeighbours(int from) const;
+
+    std::vector<int> eulerCirc();
+
+    std::vector<int> avaliableVerts(int vert);
 };

@@ -1,3 +1,5 @@
+#include <vector>
+#include <stack>
 #include "Graph.h"
 
 Graph::Graph() : points(0), weights(nullptr) {}
@@ -141,6 +143,25 @@ void Graph::generate(int points, bool oneway /*= false*/) {
     }
 }
 
+void Graph::generate_euclidean(int points) {
+    if (points < 2) return;                             // musi byc conajmniej jedna krawedz
+
+    reset(points);                                      // wyzerowanie
+
+    auto p = points * (points - 1) / 2;
+    std::vector<int> vec((unsigned long) p);
+    for (auto i = 0; i < vec.size(); i++) {
+        vec[i] = rand() % 50 + 50;                      // wagi z zakresu [50, 99]
+    }
+
+    for (auto from = 0; from < points; from++) {
+        for (auto to = 0; to < from; to++) {
+            auto i = from * (from - 1) / 2 + to;
+            addEdge(from, to, vec[i]);
+        }
+    }
+}
+
 int Graph::getWeight(int row, int col) const {
     return weights[row][col];
 }
@@ -166,3 +187,53 @@ std::string Graph::toString() const {
     }
     return graph;
 }
+
+
+EdgeList Graph::getNeighbours(int from) const {
+    EdgeList list = EdgeList();
+    if (!pointExists(from))
+        return list;
+
+    for (unsigned i = 0; i < points; ++i) {
+        if (weights[from][i] == INT_MIN) continue;
+
+        list.append(from, i, weights[from][i]);
+    }
+
+    return list;
+}
+
+std::vector<int> Graph::eulerCirc() {
+    std::vector<int> eulerianCircuit;
+    int currentVertex = 0;
+    std::stack<int> vertexStack;
+    std::vector<int> listVerts = avaliableVerts(currentVertex);
+    while (!vertexStack.empty() || listVerts.size()) {
+        if (!listVerts.size()) {
+            eulerianCircuit.push_back(currentVertex);
+            currentVertex = vertexStack.top();
+            vertexStack.pop();
+        } else {
+            vertexStack.push(currentVertex);
+            std::vector<int> vertexAdjacencyList = avaliableVerts(currentVertex);
+            weights[currentVertex][vertexAdjacencyList.back()] = -1;
+            currentVertex = vertexAdjacencyList.back();
+
+        }
+        listVerts = avaliableVerts(currentVertex);
+    }
+    return eulerianCircuit;
+}
+
+std::vector<int> Graph::avaliableVerts(int vert) {
+    std::vector<int> v;
+
+    for (int i = 0; i < points; i++)
+        if (weights[vert][i] > 0)
+            v.push_back(i);
+
+    return v;
+}
+
+
+

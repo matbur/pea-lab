@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <stack>
 #include "ATSP.h"
 
 
@@ -44,7 +45,7 @@ void ATSP::print() {
     printf("Permutacja wierzcholkow: ");
     permutation->printTab();
     printf("\n");
-    graph->print();
+//    graph->print();
 
 }
 
@@ -194,6 +195,12 @@ ATSP *ATSP::Dynamic(const Graph *graph) {
     auto n = graph->getPoints();
 
     auto map = generate_subsets(n);
+
+//    for (auto i: map) {
+//        ATSP::print_vec(i.first, ": ");
+//        ATSP::print_vec(i.second);
+//    }
+
     map = fill_map(*graph, map);
 
 //    for (auto i: map) {
@@ -342,5 +349,80 @@ bool ATSP::are_disjoint(veci outer, veci inner) {
             if (i == j)
                 return false;
     return true;
+}
+
+
+ATSP *ATSP::Approximation(const Graph *graph) {
+    veci path;
+    auto dim = graph->getPoints();
+    Graph mst(dim);
+    Prime(*graph, mst);
+
+//    std::cout << mst.toString() << std::endl;
+
+    auto euler = mst.eulerCirc();
+
+//    print_vec(euler);
+
+    std::vector<bool> visited((unsigned long) dim);
+
+    auto it = euler.begin();
+    path.push_back(*it);
+    visited[*it] = true;
+    it++;
+
+    auto itl = path.begin();
+
+    while (it != euler.end()) {
+        if (!visited[*it]) {
+            path.push_back(*it);
+            itl++;
+            visited[*it] = true;
+        }
+        it++;
+    }
+
+//    print_vec(path);
+    auto g = new Graph(dim);
+    new_graph(graph, g, path);
+
+    return new ATSP(new Permutation(path), g);
+
+    return nullptr;
+}
+
+
+void ATSP::Prime(const Graph &graph, Graph &outGraph) {
+    int points = graph.getPoints();
+    outGraph.reset(points);
+    if (!points)
+        return;
+
+    int visited[points] = {1};
+
+    int left = points - 1;
+    for (; left > 0; --left) {
+        Heap heap;
+
+        // gather edges from visited points
+        for (int i = 0; i < points; ++i) {
+            if (!visited[i]) continue;
+
+            for (auto e : graph.getNeighbours(i)) {
+                if (visited[e.to]) continue;
+
+                heap.push(e);
+            }
+        }
+
+        // get edge with the lowest weight
+        Edge best = heap.pop();
+        if (best.from == -1)
+            break;
+
+        // append best edge to outGraph
+        outGraph.addEdge(best.from, best.to, best.weight);
+        visited[best.to] = 1;
+    }
 }
 
